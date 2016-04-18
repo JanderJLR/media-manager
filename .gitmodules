@@ -1,3 +1,4 @@
 [submodule "interfaces"]
 	path = interfaces
 	url = http://git.projects.genivi.org/media-manager-interfaces.git
+	branch = develop
