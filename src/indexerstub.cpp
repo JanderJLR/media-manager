@@ -16,26 +16,33 @@
 #include "indexerstub.h"
 #include "common.h"
 
-namespace MM = org::genivi::mediamanager;
+namespace MM = v1_0::org::genivi::mediamanager;
 
 IndexerStubImpl::IndexerStubImpl (LMSProvider *lms) {
     m_lms = lms;
 }
 
-void IndexerStubImpl::getDatabasePath (std::string &output, MM::Indexer::IndexerError &e) {
+void IndexerStubImpl::getDatabasePath(const std::shared_ptr<CommonAPI::ClientId> _client, getDatabasePathReply_t _reply) {
+
     MmError *error = NULL;
+    MM::Indexer::IndexerError e;
 
     std::cout << "Call to " << __FUNCTION__ << std::endl;
+
+    std::string output;
     m_lms->getDatabasePath(output, &error);
 
     if (error) {
         std::cout << "Setting error to BACKEND_UNREACHABLE" << std::endl;
         e = MM::Indexer::IndexerError::BACKEND_UNREACHABLE;
     }
+
+    _reply(output, e);
 }
 
-void IndexerStubImpl::startIndexing(MM::Indexer::IndexerError &e) {
+void IndexerStubImpl::startIndexing(const std::shared_ptr<CommonAPI::ClientId> _client, startIndexingReply_t _reply) {
     MmError *error = NULL;
+    MM::Indexer::IndexerError e;
 
     std::cout << "Call to " << __FUNCTION__ << std::endl;
     m_lms->startIndexing(&error);
@@ -44,10 +51,12 @@ void IndexerStubImpl::startIndexing(MM::Indexer::IndexerError &e) {
         std::cout << "Setting error to BACKEND_UNREACHABLE" << std::endl;
         e = MM::Indexer::IndexerError::BACKEND_UNREACHABLE;
     }
+    _reply(e);
 }
 
-void IndexerStubImpl::stopIndexing(MM::Indexer::IndexerError &e) {
+void IndexerStubImpl::stopIndexing(const std::shared_ptr<CommonAPI::ClientId> _client, stopIndexingReply_t _reply) {
     MmError *error = NULL;
+    MM::Indexer::IndexerError e;
 
     std::cout << "Call to " << __FUNCTION__ << std::endl;
     m_lms->stopIndexing(&error);
@@ -56,9 +65,10 @@ void IndexerStubImpl::stopIndexing(MM::Indexer::IndexerError &e) {
         std::cout << "Setting error to BACKEND_UNREACHABLE" << std::endl;
         e = MM::Indexer::IndexerError::BACKEND_UNREACHABLE;
     }
+    _reply(e);
 }
 
-const MM::Indexer::IndexerStatus& IndexerStubImpl::getIndexerStatusAttribute () {
+const MM::Indexer::IndexerStatus& IndexerStubImpl::getIndexerStatusAttribute(const std::shared_ptr<CommonAPI::ClientId> _client) {
     std::cout << "Not implemented: Call to " << __FUNCTION__ << std::endl;
     return MM::Indexer::IndexerStatus::RUNNING;
 }

@@ -13,7 +13,7 @@
 
 #include "playerstub.h"
 
-namespace MM = org::genivi::mediamanager;
+namespace MM = v1_0::org::genivi::mediamanager;
 
 PlayerStubImpl::PlayerStubImpl (PlayerProvider *player) {
     m_player = player;
@@ -92,8 +92,10 @@ void PlayerStubImpl::initializeDefaultValues() {
     trySetPositionAttribute (UINT64_MAX - 1);
 }
 
-void PlayerStubImpl::next(MM::PlayerTypes::PlayerError& e) {
+void PlayerStubImpl::next(const std::shared_ptr<CommonAPI::ClientId> _client, nextReply_t _reply) {
+
     MmError *error = new MmError("");
+    MM::PlayerTypes::PlayerError e;
 
     m_player->next(&error);
 
@@ -101,61 +103,89 @@ void PlayerStubImpl::next(MM::PlayerTypes::PlayerError& e) {
         e = MM::PlayerTypes::PlayerError::BACKEND_UNREACHABLE;
         free (error);
     }
+
+    _reply(e);
 }
 
-void PlayerStubImpl::openUri(std::string uri, MM::PlayerTypes::PlayerError& e) {
-    MmError *error = new MmError("");
+void PlayerStubImpl::openUri(const std::shared_ptr<CommonAPI::ClientId> _client, std::string _uri, openUriReply_t _reply) {
 
-    m_player->openURI(uri, &error);
+    MmError *error = new MmError("");
+    MM::PlayerTypes::PlayerError e;
+
+    m_player->openURI(_uri, &error);
 
     if (error) {
         e = MM::PlayerTypes::PlayerError::BACKEND_UNREACHABLE;
         free (error);
     }
+
+    _reply(e);
 }
 
-void PlayerStubImpl::openPlaylist(std::string uri, MM::PlayerTypes::PlayerError& e){
+void PlayerStubImpl::openPlaylist(const std::shared_ptr<CommonAPI::ClientId> _client, std::string _uri, openPlaylistReply_t _reply) {
+
     MmError *error = new MmError("");
-    m_player->openPlaylist(uri, &error);
+    MM::PlayerTypes::PlayerError e;
+
+    m_player->openPlaylist(_uri, &error);
 
     if (error) {
         e = MM::PlayerTypes::PlayerError::BACKEND_UNREACHABLE;
         free (error);
     }
+
+    _reply(e);
 }
 
-void PlayerStubImpl::pause(MM::PlayerTypes::PlayerError& e){
+void PlayerStubImpl::pause(const std::shared_ptr<CommonAPI::ClientId> _client, pauseReply_t _reply) {
+
     MmError *error = new MmError("");
+    MM::PlayerTypes::PlayerError e;
+
     m_player->pause(&error);
 
     if (error) {
         e = MM::PlayerTypes::PlayerError::BACKEND_UNREACHABLE;
         free (error);
     }
+
+    _reply(e);
 }
 
-void PlayerStubImpl::play(MM::PlayerTypes::PlayerError& e){
+void PlayerStubImpl::play(const std::shared_ptr<CommonAPI::ClientId> _client, playReply_t _reply) {
+
     MmError *error = new MmError("");
+    MM::PlayerTypes::PlayerError e;
+
     m_player->play(&error);
 
     if (error) {
         e = MM::PlayerTypes::PlayerError::BACKEND_UNREACHABLE;
         free (error);
     }
+
+    _reply(e);
 }
 
-void PlayerStubImpl::playPause(MM::PlayerTypes::PlayerError& e){
+void PlayerStubImpl::playPause(const std::shared_ptr<CommonAPI::ClientId> _client, playPauseReply_t _reply) {
+
     MmError *error = new MmError("");
+    MM::PlayerTypes::PlayerError e;
+
     m_player->playPause(&error);
 
     if (error) {
         e = MM::PlayerTypes::PlayerError::BACKEND_UNREACHABLE;
         free (error);
     }
+
+    _reply(e);
 }
 
-void PlayerStubImpl::previous(MM::PlayerTypes::PlayerError& e){
+void PlayerStubImpl::previous(const std::shared_ptr<CommonAPI::ClientId> _client, previousReply_t _reply) {
+
     MmError *error = new MmError("");
+    MM::PlayerTypes::PlayerError e;
 
     m_player->previous(&error);
 
@@ -163,26 +193,38 @@ void PlayerStubImpl::previous(MM::PlayerTypes::PlayerError& e){
         e = MM::PlayerTypes::PlayerError::BACKEND_UNREACHABLE;
         free (error);
     }
+
+    _reply(e);
 }
 
-void PlayerStubImpl::seek(int64_t pos, MM::PlayerTypes::PlayerError& e){
+void PlayerStubImpl::seek(const std::shared_ptr<CommonAPI::ClientId> _client, int64_t _pos, seekReply_t _reply) {
+
     MmError *error = new MmError("");
-    m_player->seek(pos, &error);
+    MM::PlayerTypes::PlayerError e;
+
+    m_player->seek(_pos, &error);
 
     if (error) {
         e = MM::PlayerTypes::PlayerError::BACKEND_UNREACHABLE;
         free (error);
     }
+
+    _reply(e);
 }
 
-void PlayerStubImpl::setPosition(uint64_t pos, MM::PlayerTypes::PlayerError& e){
+void PlayerStubImpl::setPosition(const std::shared_ptr<CommonAPI::ClientId> _client, uint64_t _pos, setPositionReply_t _reply) {
+
     MmError *error = new MmError("");
-    m_player->setPosition(pos, &error);
+    MM::PlayerTypes::PlayerError e;
+
+    m_player->setPosition(_pos, &error);
 
     if (error) {
         e = MM::PlayerTypes::PlayerError::BACKEND_UNREACHABLE;
         free (error);
     }
+
+    _reply(e);
 }
 
 void PlayerStubImpl::stop(MM::PlayerTypes::PlayerError& e){
@@ -195,55 +237,78 @@ void PlayerStubImpl::stop(MM::PlayerTypes::PlayerError& e){
     }
 }
 
-void PlayerStubImpl::enqueueUri(std::string uri, MM::PlayerTypes::PlayerError& e) {
+void PlayerStubImpl::enqueueUri(const std::shared_ptr<CommonAPI::ClientId> _client, std::string _uri, enqueueUriReply_t _reply) {
+
     MmError *error = new MmError();
-    m_player->enqueueUri (uri, &error);
+    MM::PlayerTypes::PlayerError e;
+
+    m_player->enqueueUri (_uri, &error);
+
 
     if (error) {
         std::cout << "Error in " << __FUNCTION__ << " " << error->message << std::endl;
         e = MM::PlayerTypes::PlayerError::BACKEND_UNREACHABLE;
         free (error);
     }
+
+    _reply(e);
 }
 
-void PlayerStubImpl::dequeueIndex(uint64_t pos, MM::PlayerTypes::PlayerError& e) {
+void PlayerStubImpl::dequeueIndex(const std::shared_ptr<CommonAPI::ClientId> _client, uint64_t _pos, dequeueIndexReply_t _reply) {
+
     MmError *error = new MmError("");
-    m_player->dequeueIndex (pos, &error);
+    MM::PlayerTypes::PlayerError e;
+
+    m_player->dequeueIndex (_pos, &error);
 
     if (error) {
         e = MM::PlayerTypes::PlayerError::BACKEND_UNREACHABLE;
         free (error);
     }
+
+    _reply(e);
 }
 
-void PlayerStubImpl::dequeueAll(MM::PlayerTypes::PlayerError& e) {
+void PlayerStubImpl::dequeueAll(const std::shared_ptr<CommonAPI::ClientId> _client, dequeueAllReply_t _reply) {
+
     MmError *error = new MmError("");
+    MM::PlayerTypes::PlayerError e;
+
     m_player->dequeueAll (&error);
 
     if (error) {
         e = MM::PlayerTypes::PlayerError::BACKEND_UNREACHABLE;
         free (error);
     }
+
+    _reply(e);
 }
 
-void PlayerStubImpl::getCurrentPlayQueue(MM::MediaTypes::ResultMapList& playQueue, MM::PlayerTypes::PlayerError& e) {
+void PlayerStubImpl::getCurrentPlayQueue(const std::shared_ptr<CommonAPI::ClientId> _client, getCurrentPlayQueueReply_t _reply) {
+
     MmError *error = new MmError("");
+    MM::PlayerTypes::PlayerError e;
+
     json_t* queue;
     m_player->getCurrentPlayQueue (&queue, &error);
 
+    MM::MediaTypes::ResultMapList playQueue;
     Common::resultMapListToCAPIResultMapList(queue, playQueue, m_generalFilter);
+
     if (error) {
         e = MM::PlayerTypes::PlayerError::BACKEND_UNREACHABLE;
         free (error);
     }
+
+    _reply(playQueue, e);
 }
 
-const uint64_t& PlayerStubImpl::getPositionAttribute(const std::shared_ptr<CommonAPI::ClientId> clientId) {
+const uint64_t& PlayerStubImpl::getPositionAttribute(const std::shared_ptr<CommonAPI::ClientId> _client) {
     pos = m_player->getPosition(NULL);
     return pos;
 }
 
-const uint64_t& PlayerStubImpl::getDurationAttribute(const std::shared_ptr<CommonAPI::ClientId> clientId) {
+const uint64_t& PlayerStubImpl::getDurationAttribute(const std::shared_ptr<CommonAPI::ClientId> _client) {
     duration = m_player->getDuration(NULL);
     return duration;
 }

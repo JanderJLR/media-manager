@@ -26,7 +26,7 @@
 #include "serviceprovider.h"
 #include "dleyna-renderer-generated.h"
 #include "dleyna-generated.h"
-#include "../src-gen/org/genivi/mediamanager/PlayerStubDefault.h"
+#include "../interfaces/src-gen/v1_0/org/genivi/mediamanager/PlayerStubDefault.hpp"
 
 /**
  * @brief Provides Player functionality
@@ -111,7 +111,7 @@ public:
      *  @param repeat Repeat mode to set
      */
 
-    void setRepeat (org::genivi::mediamanager::PlayerTypes::RepeatStatus repeat);
+    void setRepeat (v1_0::org::genivi::mediamanager::PlayerTypes::RepeatStatus repeat);
 
     /** @description Shuffle or unshuffle the current play queue. Shuffling,
      *             un-shuffling and then re-shuffling will yield two different
@@ -191,7 +191,7 @@ public:
     /**
      * This is a reference to the PlayerStubImpl for this instance
      */
-    org::genivi::mediamanager::PlayerStubDefault *stub;
+    v1_0::org::genivi::mediamanager::PlayerStubDefault *stub;
 private:
 dleynaRendererMediaPlayer2Player *mp;
 dleynaServerMediaContainer2      *mc;
@@ -200,7 +200,7 @@ uint64_t playQueuePosition;
 json_t *playqueue;
 bool isPlaying;
 guint m_signalHandlerId;
-org::genivi::mediamanager::PlayerTypes::RepeatStatus m_repeat;
+v1_0::org::genivi::mediamanager::PlayerTypes::RepeatStatus m_repeat;
 bool m_shuffle;
 bool m_muted;
 double m_playrate;

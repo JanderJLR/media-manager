@@ -6,7 +6,7 @@
 #include "browserprovider.h"
 #include "common.h"
 
-#define ROOT_CONTAINER "/com/intel/dLeynaServer/server/1" 
+#define ROOT_CONTAINER "/com/intel/dLeynaServer/server/1"
 
 class BrowserProviderTest : public ::testing::Test {
 protected:

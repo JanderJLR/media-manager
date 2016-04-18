@@ -14,13 +14,13 @@
 #ifndef BROWSERSTUB_H
 #define BROWSERSTUB_H
 
-#include <CommonAPI/CommonAPI.h>
+#include <CommonAPI/CommonAPI.hpp>
 
-#include "../src-gen/org/genivi/mediamanager/BrowserStubDefault.h"
+#include "../interfaces/src-gen/v1_0/org/genivi/mediamanager/BrowserStubDefault.hpp"
 
 #include "browserprovider.h"
 
-namespace MM = org::genivi::mediamanager;
+namespace MM = v1_0::org::genivi::mediamanager;
 
 /**
  * \brief Conversion layer between CommonAPI and internal API
@@ -33,85 +33,25 @@ namespace MM = org::genivi::mediamanager;
  *
  * @see BrowserProvider
  */
-class BrowserStubImpl: public org::genivi::mediamanager::BrowserStubDefault {
+class BrowserStubImpl: public v1_0::org::genivi::mediamanager::BrowserStubDefault {
 
 public:
+
     BrowserStubImpl (BrowserProvider *browser);
-    void discoverMediaManagers(std::vector<std::string> &idents,
-                               MM::BrowserTypes::BrowserError& e);
 
-    void listContainers(std::string path,
-                                uint64_t offset,
-                                uint64_t count,
-                                std::vector<std::string> filter,
-                                MM::MediaTypes::ResultMapList& containers,
-                                MM::BrowserTypes::BrowserError& e);
+    virtual void discoverMediaManagers(const std::shared_ptr<CommonAPI::ClientId> _client, discoverMediaManagersReply_t _reply);
+    virtual void listContainers(const std::shared_ptr<CommonAPI::ClientId> _client, std::string _path, uint64_t _offset, uint64_t _count, std::vector<std::string> _filter, listContainersReply_t _reply);
+    virtual void listContainersEx(const std::shared_ptr<CommonAPI::ClientId> _client, std::string _path, uint64_t _offset, uint64_t _count, std::vector<std::string> _filter, ::v1_0::org::genivi::mediamanager::BrowserTypes::SortKey _sortKey, listContainersExReply_t _reply);
+    virtual void listChildren(const std::shared_ptr<CommonAPI::ClientId> _client, std::string _path, uint64_t _offset, uint64_t _count, std::vector<std::string> _filter, listChildrenReply_t _reply);
+    virtual void listChildrenEx(const std::shared_ptr<CommonAPI::ClientId> _client, std::string _path, uint64_t _offset, uint64_t _count, std::vector<std::string> _filter, ::v1_0::org::genivi::mediamanager::BrowserTypes::SortKey _sortKey, listChildrenExReply_t _reply);
+    virtual void listItems(const std::shared_ptr<CommonAPI::ClientId> _client, std::string _path, uint64_t _offset, uint64_t _count, std::vector<std::string> _filter, listItemsReply_t _reply);
+    virtual void listItemsEx(const std::shared_ptr<CommonAPI::ClientId> _client, std::string _path, uint64_t _offset, uint64_t _count, std::vector<std::string> _filter, ::v1_0::org::genivi::mediamanager::BrowserTypes::SortKey _sortKey, listItemsExReply_t _reply);
+    virtual void createReference(const std::shared_ptr<CommonAPI::ClientId> _client, std::string _path, std::string _objectPath, createReferenceReply_t _reply);
+    virtual void createContainer(const std::shared_ptr<CommonAPI::ClientId> _client, std::string _path, std::string _displayName, std::vector<std::string> _childTypes, createContainerReply_t _reply);
 
-    void listContainersEx(std::string path,
-                          uint64_t offset,
-                          uint64_t count,
-                          std::vector<std::string> filter,
-                          MM::BrowserTypes::SortKey sortKey,
-                          MM::MediaTypes::ResultMapList& children,
-                          MM::BrowserTypes::BrowserError& e);
+    virtual void searchObjects(const std::shared_ptr<CommonAPI::ClientId> _client, std::string _path, std::string _query, uint64_t _offset, uint64_t _count, std::vector<std::string> _filter, searchObjectsReply_t _reply);
+    virtual void searchObjectsEx(const std::shared_ptr<CommonAPI::ClientId> _client, std::string _path, std::string _query, uint64_t _offset, uint64_t _count, std::vector<std::string> _filter, ::v1_0::org::genivi::mediamanager::BrowserTypes::SortKey _sortKey, searchObjectsExReply_t _reply);
 
-    void listChildren(std::string path,
-                                uint64_t offset,
-                                uint64_t count,
-                                std::vector<std::string> filter,
-                                MM::MediaTypes::ResultMapList& children,
-                                MM::BrowserTypes::BrowserError& e);
-
-    void listChildrenEx(std::string path,
-                          uint64_t offset,
-                          uint64_t count,
-                          std::vector<std::string> filter,
-                          MM::BrowserTypes::SortKey sortKey,
-                          MM::MediaTypes::ResultMapList& children,
-                          MM::BrowserTypes::BrowserError& e);
-
-    void listItems(std::string path,
-                   uint64_t offset,
-                   uint64_t count,
-                   std::vector<std::string> filter,
-                   MM::MediaTypes::ResultMapList& items,
-                   MM::BrowserTypes::BrowserError& e);
-
-    void listItemsEx(std::string path,
-                     uint64_t offset,
-                     uint64_t count,
-                     std::vector<std::string> filter,
-                     MM::BrowserTypes::SortKey sortKey,
-                     MM::MediaTypes::ResultMapList& items,
-                     MM::BrowserTypes::BrowserError& e);
-
-    void createReference(std::string path,
-                         std::string reference,
-                         std::string& result,
-                         MM::BrowserTypes::BrowserError& e);
-
-    void createContainer(std::string path,
-                         std::string displayname,
-                         std::vector<std::string> childTypes,
-                         std::string& result,
-                         MM::BrowserTypes::BrowserError& e);
-
-    void searchObjects(std::string path,
-                       std::string query,
-                       uint64_t offset,
-                       uint64_t count,
-                       std::vector<std::string> filter,
-                       MM::MediaTypes::ResultMapList& objects,
-                       MM::BrowserTypes::BrowserError& e);
-
-    void searchObjectsEx(std::string path,
-                         std::string query,
-                         uint64_t offset,
-                         uint64_t count,
-                         std::vector<std::string> filter,
-                         MM::BrowserTypes::SortKey sortKey,
-                         MM::MediaTypes::ResultMapList& objects,
-                         MM::BrowserTypes::BrowserError& e);
 
 private:
     BrowserProvider *m_browser;

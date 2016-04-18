@@ -16,7 +16,7 @@
 #include <iostream>
 
 #include <gio/gio.h>
-#include <CommonAPI/CommonAPI.h>
+#include <CommonAPI/CommonAPI.hpp>
 
 #include "lms.h"
 #include "browserprovider.h"
@@ -24,42 +24,6 @@
 #include "indexerstub.h"
 #include "browserstub.h"
 #include "playerstub.h"
-
-template<typename StubImpl, typename Provider>
-bool registerService (std::shared_ptr<CommonAPI::Runtime> runtime,
-                     Provider *provider,
-                      std::string address,
-                      std::string friendly,
-                      MmError *e) {
-        auto factory = runtime->createFactory();
-        if (!factory) {
-            std::cerr << "Error: Unable to create factory!\n";
-            return false;
-        }
-
-        auto servicePublisher = runtime->getServicePublisher();
-        if (!servicePublisher) {
-            std::cerr << "Error: Unable to load service publisher!\n";
-            return false;
-        }
-
-        if (!e) {
-            auto stub = std::make_shared<StubImpl>(provider);
-
-            const bool success= servicePublisher->registerService(stub,
-                                                                   address,
-                                                                   factory);
-            if (!success) {
-                std::cerr << "Error: Unable to register " << friendly << " service!\n";
-            }
-        } else {
-            std::cout << "Error connecting to " << friendly << ": " << e->message << std::endl;
-            return false;
-        }
-
-        return true;
-}
-
 
 int main (int argc, char *argv[]) {
     guint watcher_id;

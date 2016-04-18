@@ -14,7 +14,7 @@
 #include "browserstub.h"
 #include "common.h"
 
-namespace MM = org::genivi::mediamanager;
+namespace MM = v1_0::org::genivi::mediamanager;
 
 BrowserStubImpl::BrowserStubImpl (BrowserProvider *browser) {
     m_browser = browser;
@@ -42,196 +42,223 @@ BrowserStubImpl::BrowserStubImpl (BrowserProvider *browser) {
 
 std::string sortKeyToString (MM::BrowserTypes::SortKey sk) {
     std::string keyStr;
-    if (sk.order == MM::BrowserTypes::SortOrder::ASCENDING)
+    if (sk.getOrder() == MM::BrowserTypes::SortOrder::ASCENDING)
         keyStr += "+";
     else
         keyStr += "-";
 
-    keyStr += sk.keyName;
+    keyStr += sk.getKeyName();
 
     return keyStr;
 }
 
-void BrowserStubImpl::discoverMediaManagers(std::vector<std::string> &idents,
-                                            MM::BrowserTypes::BrowserError& e) {
-    idents = Common::discoverDLNABackends("servers", NULL);
+void BrowserStubImpl::discoverMediaManagers(const std::shared_ptr<CommonAPI::ClientId> _client, discoverMediaManagersReply_t _reply) {
+    std::vector<std::string> idents = Common::discoverDLNABackends("servers", NULL);
+    _reply(idents, ::v1_0::org::genivi::mediamanager::BrowserTypes::BrowserError::NO_ERROR);
 }
 
-void BrowserStubImpl::listContainers(std::string path,
-                            uint64_t offset,
-                            uint64_t count,
-                            std::vector<std::string> filter,
-                            MM::MediaTypes::ResultMapList& containers,
-                            MM::BrowserTypes::BrowserError& e) {
+void BrowserStubImpl::listContainers(const std::shared_ptr<CommonAPI::ClientId> _client,
+                            std::string _path,
+                            uint64_t _offset,
+                            uint64_t _count,
+                            std::vector<std::string> _filter,
+                            listContainersReply_t _reply) {
     Common::ResultMapList* bml = json_array();
-    m_browser->listContainers(path,
-                              offset,
-                              count,
-                              filter,
+    m_browser->listContainers(_path,
+                              _offset,
+                              _count,
+                              _filter,
                               &bml,
                               NULL);
 
+    MM::MediaTypes::ResultMapList containers;
     Common::resultMapListToCAPIResultMapList(bml, containers, m_generalFilter);
+    _reply(containers, ::v1_0::org::genivi::mediamanager::BrowserTypes::BrowserError::NO_ERROR);
 }
 
-void BrowserStubImpl::listChildrenEx(std::string path,
-                                       uint64_t offset,
-                                       uint64_t count,
-                                       std::vector<std::string> filter,
-                                       MM::BrowserTypes::SortKey sortKey,
-                                       MM::MediaTypes::ResultMapList& children,
-                                       MM::BrowserTypes::BrowserError& e) {
+void BrowserStubImpl::listContainersEx(const std::shared_ptr<CommonAPI::ClientId> _client,
+                            std::string _path,
+                            uint64_t _offset,
+                            uint64_t _count,
+                            std::vector<std::string> _filter,
+                            ::v1_0::org::genivi::mediamanager::BrowserTypes::SortKey _sortKey,
+                            listContainersExReply_t _reply) {
+
     Common::ResultMapList* bml = json_array();
 
-    m_browser->listChildrenEx(path,
-                              offset,
-                              count,
-                              filter,
-                              sortKeyToString(sortKey),
+    m_browser->listContainersEx(_path,
+                                _offset,
+                                _count,
+                                _filter,
+                                sortKeyToString(_sortKey),
+                                &bml,
+                                NULL);
+
+    MM::MediaTypes::ResultMapList containers;
+    Common::resultMapListToCAPIResultMapList(bml, containers, m_generalFilter);
+    _reply(containers, ::v1_0::org::genivi::mediamanager::BrowserTypes::BrowserError::NO_ERROR);
+}
+
+void BrowserStubImpl::listChildrenEx(const std::shared_ptr<CommonAPI::ClientId> _client,
+                          std::string _path,
+                          uint64_t _offset,
+                          uint64_t _count,
+                          std::vector<std::string> _filter,
+                          ::v1_0::org::genivi::mediamanager::BrowserTypes::SortKey _sortKey,
+                          listChildrenExReply_t _reply) {
+    Common::ResultMapList* bml = json_array();
+
+    m_browser->listChildrenEx(_path,
+                              _offset,
+                              _count,
+                              _filter,
+                              sortKeyToString(_sortKey),
                               &bml,
                               NULL);
 
+    MM::MediaTypes::ResultMapList children;
     Common::resultMapListToCAPIResultMapList(bml, children, m_generalFilter);
+    _reply(children, ::v1_0::org::genivi::mediamanager::BrowserTypes::BrowserError::NO_ERROR);
 }
 
-void BrowserStubImpl::listChildren(std::string path,
-                                   uint64_t offset,
-                                   uint64_t count,
-                                   std::vector<std::string> filter,
-                                   MM::MediaTypes::ResultMapList& children,
-                                   MM::BrowserTypes::BrowserError& e) {
+void BrowserStubImpl::listChildren(const std::shared_ptr<CommonAPI::ClientId> _client,
+                                   std::string _path,
+                                   uint64_t _offset,
+                                   uint64_t _count,
+                                   std::vector<std::string> _filter,
+                                   listChildrenReply_t _reply) {
+
     Common::ResultMapList* bml = json_array();
 
-    m_browser->listChildren(path,
-                            offset,
-                            count,
-                            filter,
+    m_browser->listChildren(_path,
+                            _offset,
+                            _count,
+                            _filter,
                             &bml,
                             NULL);
 
+    MM::MediaTypes::ResultMapList children;
     Common::resultMapListToCAPIResultMapList(bml, children, m_generalFilter);
+    _reply(children, ::v1_0::org::genivi::mediamanager::BrowserTypes::BrowserError::NO_ERROR);
 }
 
-void BrowserStubImpl::listContainersEx(std::string path,
-                                       uint64_t offset,
-                                       uint64_t count,
-                                       std::vector<std::string> filter,
-                                       MM::BrowserTypes::SortKey sortKey,
-                                       MM::MediaTypes::ResultMapList& containers,
-                                       MM::BrowserTypes::BrowserError& e) {
+void BrowserStubImpl::listItems(const std::shared_ptr<CommonAPI::ClientId> _client,
+                     std::string _path,
+                     uint64_t _offset,
+                     uint64_t _count,
+                     std::vector<std::string> _filter,
+                     listItemsReply_t _reply) {
 
     Common::ResultMapList* bml = json_array();
 
-    m_browser->listContainersEx(path,
-                                offset,
-                                count,
-                                filter,
-                                sortKeyToString(sortKey),
-                                &bml,
-                                NULL);
-
-    Common::resultMapListToCAPIResultMapList(bml, containers, m_generalFilter);
-}
-
-void BrowserStubImpl::listItems(std::string path,
-                            uint64_t offset,
-                            uint64_t count,
-                            std::vector<std::string> filter,
-                            MM::MediaTypes::ResultMapList& items,
-                            MM::BrowserTypes::BrowserError& e) {
-    Common::ResultMapList* bml = json_array();
-
-    m_browser->listItems(path,
-                         offset,
-                         count,
-                         filter,
+    m_browser->listItems(_path,
+                         _offset,
+                         _count,
+                         _filter,
                          &bml,
                          NULL);
 
+    MM::MediaTypes::ResultMapList items;
     Common::resultMapListToCAPIResultMapList(bml, items, m_generalFilter);
+    _reply(items, ::v1_0::org::genivi::mediamanager::BrowserTypes::BrowserError::NO_ERROR);
 }
 
-void BrowserStubImpl::listItemsEx(std::string path,
-                                  uint64_t offset,
-                                  uint64_t count,
-                                  std::vector<std::string> filter,
-                                  MM::BrowserTypes::SortKey sortKey,
-                                  MM::MediaTypes::ResultMapList& items,
-                                  MM::BrowserTypes::BrowserError& e) {
+void BrowserStubImpl::listItemsEx(const std::shared_ptr<CommonAPI::ClientId> _client,
+                       std::string _path,
+                       uint64_t _offset,
+                       uint64_t _count,
+                       std::vector<std::string> _filter,
+                       ::v1_0::org::genivi::mediamanager::BrowserTypes::SortKey _sortKey,
+                       listItemsExReply_t _reply) {
+
     Common::ResultMapList* bml = json_array();
 
-    m_browser->listItemsEx(path,
-                           offset,
-                           count,
-                           filter,
-                           sortKeyToString(sortKey),
+    m_browser->listItemsEx(_path,
+                           _offset,
+                           _count,
+                           _filter,
+                           sortKeyToString(_sortKey),
                            &bml,
                            NULL);
 
+    MM::MediaTypes::ResultMapList items;
     Common::resultMapListToCAPIResultMapList(bml, items, m_generalFilter);
+    _reply(items, ::v1_0::org::genivi::mediamanager::BrowserTypes::BrowserError::NO_ERROR);
+
 }
 
-void BrowserStubImpl::createReference(std::string path,
-                         std::string reference,
-                         std::string& result,
-                         MM::BrowserTypes::BrowserError& e) {
+void BrowserStubImpl::createReference(const std::shared_ptr<CommonAPI::ClientId> _client,
+                                            std::string _path,
+                                            std::string _objectPath,
+                                            createReferenceReply_t _reply) {
 
-    m_browser->createReference(path,
-                               reference,
+    std::string result;
+    m_browser->createReference(_path,
+                               _objectPath,
                                result,
                                NULL);
+    _reply(result, ::v1_0::org::genivi::mediamanager::BrowserTypes::BrowserError::NO_ERROR);
 }
 
-void BrowserStubImpl::createContainer(std::string path,
-                     std::string displayname,
-                     std::vector<std::string> childTypes,
-                     std::string& result,
-                     MM::BrowserTypes::BrowserError& e) {
-    m_browser->createContainer (path,
-                                displayname,
-                                childTypes,
+void BrowserStubImpl::createContainer(const std::shared_ptr<CommonAPI::ClientId> _client,
+                                            std::string _path,
+                                            std::string _displayName,
+                                            std::vector<std::string> _childTypes,
+                                            createContainerReply_t _reply) {
+
+    std::string result;
+    m_browser->createContainer (_path,
+                                _displayName,
+                                _childTypes,
                                 result,
                                 NULL);
+    _reply(result, ::v1_0::org::genivi::mediamanager::BrowserTypes::BrowserError::NO_ERROR);
 }
 
-void BrowserStubImpl::searchObjects(std::string path,
-                                    std::string query,
-                                    uint64_t offset,
-                                    uint64_t count,
-                                    std::vector<std::string> filter,
-                                    MM::MediaTypes::ResultMapList& items,
-                                    MM::BrowserTypes::BrowserError& e) {
+void BrowserStubImpl::searchObjects(const std::shared_ptr<CommonAPI::ClientId> _client,
+                                          std::string _path,
+                                          std::string _query,
+                                          uint64_t _offset,
+                                          uint64_t _count,
+                                          std::vector<std::string> _filter,
+                                          searchObjectsReply_t _reply) {
+
     Common::ResultMapList* bml = json_array();
 
-    m_browser->searchObjects (path,
-                              query,
-                              offset,
-                              count,
-                              filter,
+    m_browser->searchObjects (_path,
+                              _query,
+                              _offset,
+                              _count,
+                              _filter,
                               &bml,
                               NULL);
 
+    MM::MediaTypes::ResultMapList items;
     Common::resultMapListToCAPIResultMapList(bml, items, m_generalFilter);
+    _reply(items, ::v1_0::org::genivi::mediamanager::BrowserTypes::BrowserError::NO_ERROR);
 }
 
-void BrowserStubImpl::searchObjectsEx(std::string path,
-                                      std::string query,
-                                      uint64_t offset,
-                                      uint64_t count,
-                                      std::vector<std::string> filter,
-                                      MM::BrowserTypes::SortKey sortKey,
-                                      MM::MediaTypes::ResultMapList& items,
-                                      MM::BrowserTypes::BrowserError& e) {
+void BrowserStubImpl::searchObjectsEx(const std::shared_ptr<CommonAPI::ClientId> _client,
+                           std::string _path,
+                           std::string _query,
+                           uint64_t _offset,
+                           uint64_t _count,
+                           std::vector<std::string> _filter,
+                           ::v1_0::org::genivi::mediamanager::BrowserTypes::SortKey _sortKey,
+                           searchObjectsExReply_t _reply) {
+
     Common::ResultMapList* bml = json_array();
 
-    m_browser->searchObjectsEx (path,
-                                query,
-                                offset,
-                                count,
-                                filter,
-                                sortKeyToString(sortKey),
+    m_browser->searchObjectsEx (_path,
+                                _query,
+                                _offset,
+                                _count,
+                                _filter,
+                                sortKeyToString(_sortKey),
                                 &bml,
                                 NULL);
 
+    MM::MediaTypes::ResultMapList items;
     Common::resultMapListToCAPIResultMapList(bml, items, m_generalFilter);
+    _reply(items, ::v1_0::org::genivi::mediamanager::BrowserTypes::BrowserError::NO_ERROR);
 }

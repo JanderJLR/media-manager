@@ -7,9 +7,9 @@
 #include <iostream>
 #include <vector>
 
-#include "../src-gen/org/genivi/mediamanager/MediaTypes.h"
+#include "../interfaces/src-gen/v1_0/org/genivi/mediamanager/MediaTypes.hpp"
 
-namespace MM = org::genivi::mediamanager;
+namespace MM = v1_0::org::genivi::mediamanager;
 
 /**
  * Class for errors in the Media Manager

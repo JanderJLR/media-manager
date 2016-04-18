@@ -14,13 +14,13 @@
 #ifndef PLAYERSTUB_H
 #define PLAYERSTUB_H
 
-#include <CommonAPI/CommonAPI.h>
+#include <CommonAPI/CommonAPI.hpp>
 
-#include "../src-gen/org/genivi/mediamanager/PlayerStubDefault.h"
+#include "../interfaces/src-gen/v1_0/org/genivi/mediamanager/PlayerStubDefault.hpp"
 
 #include "playerprovider.h"
 
-namespace MM = org::genivi::mediamanager;
+namespace MM = v1_0::org::genivi::mediamanager;
 
 /**
  * \brief Conversion layer between CommonAPI and internal API
@@ -33,31 +33,31 @@ namespace MM = org::genivi::mediamanager;
  *
  * @see PlayerProvider
  */
-class PlayerStubImpl: public org::genivi::mediamanager::PlayerStubDefault {
+class PlayerStubImpl: public v1_0::org::genivi::mediamanager::PlayerStubDefault {
 
 public:
     PlayerStubImpl (PlayerProvider *browser);
 
     void initializeDefaultValues();
 
-    virtual void next(MM::PlayerTypes::PlayerError& e);
-    virtual void openUri(std::string uri, MM::PlayerTypes::PlayerError& e);
-    virtual void openPlaylist(std::string uri, MM::PlayerTypes::PlayerError& e);
-    virtual void pause(MM::PlayerTypes::PlayerError& e);
-    virtual void play(MM::PlayerTypes::PlayerError& e);
-    virtual void playPause(MM::PlayerTypes::PlayerError& e);
-    virtual void previous(MM::PlayerTypes::PlayerError& e);
-    virtual void seek(int64_t pos, MM::PlayerTypes::PlayerError& e);
-    virtual void setPosition(uint64_t pos, MM::PlayerTypes::PlayerError& e);
     virtual void stop(MM::PlayerTypes::PlayerError& e);
 
-    virtual void enqueueUri(std::string uri, MM::PlayerTypes::PlayerError& e);
-    virtual void dequeueIndex(uint64_t pos, MM::PlayerTypes::PlayerError& e);
-    virtual void dequeueAll(MM::PlayerTypes::PlayerError& e);
-    virtual void getCurrentPlayQueue(MM::MediaTypes::ResultMapList& playQueue, MM::PlayerTypes::PlayerError& e);
+    virtual void next(const std::shared_ptr<CommonAPI::ClientId> _client, nextReply_t _reply);
+    virtual void openUri(const std::shared_ptr<CommonAPI::ClientId> _client, std::string _uri, openUriReply_t _reply);
+    virtual void enqueueUri(const std::shared_ptr<CommonAPI::ClientId> _client, std::string _uri, enqueueUriReply_t _reply);
+    virtual void dequeueIndex(const std::shared_ptr<CommonAPI::ClientId> _client, uint64_t _pos, dequeueIndexReply_t _reply);
+    virtual void getCurrentPlayQueue(const std::shared_ptr<CommonAPI::ClientId> _client, getCurrentPlayQueueReply_t _reply);
+    virtual void dequeueAll(const std::shared_ptr<CommonAPI::ClientId> _client, dequeueAllReply_t _reply);
+    virtual void openPlaylist(const std::shared_ptr<CommonAPI::ClientId> _client, std::string _uri, openPlaylistReply_t _reply);
+    virtual void pause(const std::shared_ptr<CommonAPI::ClientId> _client, pauseReply_t _reply);
+    virtual void play(const std::shared_ptr<CommonAPI::ClientId> _client, playReply_t _reply);
+    virtual void playPause(const std::shared_ptr<CommonAPI::ClientId> _client, playPauseReply_t _reply);
+    virtual void previous(const std::shared_ptr<CommonAPI::ClientId> _client, previousReply_t _reply);
+    virtual void seek(const std::shared_ptr<CommonAPI::ClientId> _client, int64_t _pos, seekReply_t _reply);
+    virtual void setPosition(const std::shared_ptr<CommonAPI::ClientId> _client, uint64_t _pos, setPositionReply_t _reply);
 
-    const uint64_t& getPositionAttribute(const std::shared_ptr<CommonAPI::ClientId> clientId);
-    const uint64_t& getDurationAttribute(const std::shared_ptr<CommonAPI::ClientId> clientId);
+    virtual const uint64_t& getPositionAttribute(const std::shared_ptr<CommonAPI::ClientId> _client);
+    virtual const uint64_t& getDurationAttribute(const std::shared_ptr<CommonAPI::ClientId> _client);
 
     virtual void onRemoteRateAttributeChanged();
     virtual void onRemoteRepeatAttributeChanged();

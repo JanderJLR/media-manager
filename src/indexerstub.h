@@ -14,13 +14,13 @@
 #ifndef INDEXERSTUB_H
 #define INDEXERSTUB_H
 
-#include <CommonAPI/CommonAPI.h>
+#include <CommonAPI/CommonAPI.hpp>
 
-#include "../src-gen/org/genivi/mediamanager/IndexerStubDefault.h"
+#include "../interfaces/src-gen/v1_0/org/genivi/mediamanager/IndexerStubDefault.hpp"
 
 #include "lms.h"
 
-namespace MM = org::genivi::mediamanager;
+namespace MM = v1_0::org::genivi::mediamanager;
 
 /**
  * \brief Conversion layer between CommonAPI and internal API
@@ -33,14 +33,16 @@ namespace MM = org::genivi::mediamanager;
  *
  * @see LMSProvider
  */
-class IndexerStubImpl: public org::genivi::mediamanager::IndexerStubDefault {
+class IndexerStubImpl: public v1_0::org::genivi::mediamanager::IndexerStubDefault {
 
 public:
     IndexerStubImpl (LMSProvider *lms);
-    virtual void getDatabasePath(std::string& output, MM::Indexer::IndexerError& e);
-    virtual void startIndexing(MM::Indexer::IndexerError& e);
-    virtual void stopIndexing(MM::Indexer::IndexerError& e);
-    virtual const MM::Indexer::IndexerStatus& getIndexerStatusAttribute ();
+
+    virtual void getDatabasePath(const std::shared_ptr<CommonAPI::ClientId> _client, getDatabasePathReply_t _reply);
+    virtual void stopIndexing(const std::shared_ptr<CommonAPI::ClientId> _client, stopIndexingReply_t _reply);
+    virtual void startIndexing(const std::shared_ptr<CommonAPI::ClientId> _client, startIndexingReply_t _reply);
+
+    virtual const MM::Indexer::IndexerStatus& getIndexerStatusAttribute(const std::shared_ptr<CommonAPI::ClientId> _client);
 
 private:
     LMSProvider *m_lms;
